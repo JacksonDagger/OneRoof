@@ -62,7 +62,7 @@ router.post("/payment", async function (req, res) {
     youoweme_you: req.body.you,
     youoweme_create_date: new Date(),
     youoweme_payed: true,
-    youoweme_amount: req.body.amount,
+    youoweme_amount: req.body.amount
   };
   console.log(d);
   await knex('youowemes')
