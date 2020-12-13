@@ -7,13 +7,13 @@ const knex = require("../db");
 router.use(auth.authMiddleware);
 
 router.post("/", async function(req, res) {
-    var memo = req.body.memo;
-    var target = req.body.target;
-    var amount = req.body.amount;
-    var status = req.body.status;
-    var topic = "youoweme";
+    const memo = req.body.memo;
+    const target = req.body.target;
+    const amount = req.body.amount;
+    const status = req.body.status;
+    const topic = "youoweme";
 
-    var registrationTokens = await knex.select("token")
+    const registrationTokens = await knex.select("token")
         .from("tokens")
         .where("roommate_id", target);
 
@@ -23,26 +23,43 @@ router.post("/", async function(req, res) {
             body: memo
         },
         tokens: registrationTokens,
-        topic : topic
-    }
+        topic
+    };
 
-    var id = await knex("youowemes")
-        .insert({youoweme_you: target,
-            youoweme_me: 0,
-            youoweme_amount: amount,
-            youoweme_create_date: new Date()
+    var id;
+
+    try {
+        if (status === true){
+            id = await knex("youowemes")
+                .insert({"youoweme_you": target,
+                    "youoweme_me": 0,
+                    "youoweme_amount": amount,
+                    "youoweme_create_date": new Date(),
+                    "youoweme_payed": true
+                });
+        }
+        else {
+            var id = await knex("youowemes")
+                .insert({"youoweme_you": target,
+                    "youoweme_me": 0,
+                    "youoweme_amount": amount,
+                    "youoweme_create_date": new Date()
+                });
+        }
+        admin.messaging().sendMulticast(message)
+        .then((response) => {
+            console.log(response.successCount + " messages were sent successfully"); // eslint-disable-line no-console
         });
-
-    admin.messaging().sendMulticast(message)
-    .then((response) => {
-        console.log(response.successCount + " messages were sent successfully")
-    });
-    res.json({id: id[0]});
+        res.json({id: id[0]});
+    } catch (error) {
+        console.log(error); // eslint-disable-line no-console
+        res.status(error.status || 500).send(error.message);
+    }
 });
 
 router.patch("/:youowemeId", async function(req, res) {
-    var youowemeid = req.params["youowemeId"];
-    var payed = req.body.payed;
+    const youowemeid = req.params["youowemeId"];
+    const payed = req.body.payed;
     try {
         await knex("youowemes")
         .update("youoweme_payed", payed)

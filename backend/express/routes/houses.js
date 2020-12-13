@@ -18,13 +18,11 @@ var purchases = new Purchases(knex, houses, roommates);
 router.use(auth.authMiddleware);
 
 router.post("/", async function(req, res) {
-    console.log("Uid: ", res.locals.user.uid);
     try {
         const id = await houses.addHouse(req.body.name, res.locals.user.uid);
-        res.json({id: id});
+        res.json({id});
     } catch (error) {
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        console.log(error);
+        console.log(error); // eslint-disable-line no-console
         res.status(error.status || 500).send(error.message);
     }
 });
@@ -35,7 +33,7 @@ router.delete("/:houseId", async function(req, res) {
             res.locals.user.uid);
         res.json({"rows deleted": rowsDeleted});
     } catch (error) {
-        console.log(error);
+        console.log(error); // eslint-disable-line no-console
         res.status(error.status || 500).send(error.message);
     }
 });
@@ -45,7 +43,7 @@ router.get("/:houseId", async function(req, res) {
         res.json(await houses.getHouse(req.params["houseId"],
             res.locals.user.uid));
     } catch (error) {
-        console.log(error);
+        console.log(error); // eslint-disable-line no-console
         res.status(error.status || 500).send(error.message);
     }
 });
@@ -62,11 +60,11 @@ router.get("/:houseId/purchases", async function(req, res) {
                     "purchase_amount", "purchase_memo",
                     "roommate_name");
         
-        purchases = purchases.map(p => {
+        purchases = purchases.map((p) => {
             return {
                 id: p.purchase_id,
                 purchaser: p.purchase_roommate,
-                purchaser_name: p.roommate_name,
+                purchaserName: p.roommate_name,
                 amount: p.purchase_amount,
                 memo: p.purchase_memo,
             };
@@ -75,7 +73,7 @@ router.get("/:houseId/purchases", async function(req, res) {
         
         res.json(purchases);
     } catch (error) {
-        console.log(error);
+        console.log(error); // eslint-disable-line no-console
         res.status(error.status || 500).send(error.message);
     }
 });
@@ -85,41 +83,41 @@ router.post("/:houseId/purchases", async function(req, res) {
     var amount = req.body.amount;
     var memo = req.body.memo;
     var divisions = req.body.divisions;
+    var houseId = req.params["houseId"];
+    var uid = res.locals.user.uid;
 
     try {
-        var id = await purchases.addPurchase(purchaser, amount, memo, divisions);
-        res.json({id: id});
+        var id = await purchases.addPurchase(purchaser, amount, memo, divisions,
+            houseId, uid);
+        res.json({id});
     } catch (error) {
-        console.log(error);
+        console.log(error); // eslint-disable-line no-console
         res.status(error.status || 500).send(error.message);
     }
 });
 
 router.get("/:houseId/purchases/:purchaseId", async function(req, res) {
     try {
-        res.json(await purchases.getPurchase(req.params["purchaseId"]));
+        res.json(await purchases.getPurchase(req.params["purchaseId"],
+            req.params["houseId"], res.locals.user.uid));
     } catch (error) {
-        console.log(error);
+        console.log(error); // eslint-disable-line no-console
         res.status(error.status || 500).send(error.message);
     }
 });
 
 router.delete("/:houseId/purchases/:purchaseId", async function(req, res) {
+    var purchaseId = req.params["purchaseId"];
+    var houseId = req.params["houseId"];
+    var uid = res.locals.user.uid;
+
     try {
-        var rowsDeleted = await purchases.deletePurchase(req.params["purchaseId"]);
+        var rowsDeleted = await purchases.deletePurchase(purchaseId, houseId, uid);
         res.json({"rows deleted": rowsDeleted});
     } catch (error) {
-        console.log(error);
+        console.log(error); // eslint-disable-line no-console
         res.status(error.status || 500).send(error.message);
     }
-});
-
-router.patch("/:houseId/purchases/:purchaseId", async function(req, res) {
-    res.send("Patch purchase " + req.params["purchaseId"] + " from house " + req.params["houseId"]);
-});
-
-router.post("/:houseId/purchases/:purchaseId/receipt", function(req, res) {
-    res.send("Add receipt for purchase " + req.params["purchaseId"] + " from house " + req.params["houseId"]);
 });
 
 router.get("/:houseId/statistics/:roommateId", async function(req, res) {
@@ -131,36 +129,36 @@ router.get("/:houseId/statistics/:roommateId", async function(req, res) {
 
     var debts = new Map();
 
-    for (roommate of house.roommates) {
-        if (roommate != roommateId) {
-            debts[roommate] = 0;
+    for (var roommate of house.roommates) {
+        if (String(roommate) !== roommateId) {
+            debts.set(roommate, 0);
         }
     }
 
-    for (debt of allDebts) {
+    for (var debt of allDebts) {
         var amount = debt["amount"];
 
-        if (debt["payer"] == roommateId) {
+        if (String(debt["payer"]) === roommateId) {
             var roommate = debt["payee"].toString();
             debts.set(roommate, (debts.get(roommate) || 0) - amount);
-        } else if (debt["payee"] == roommateId) {
+        } else if (String(debt["payee"]) === roommateId) {
             var roommate = debt["payer"].toString();
             debts.set(roommate, (debts.get(roommate) || 0) + amount);
         }
     }
 
-    var you_owe = 0;
-    var you_are_owed = 0;
+    var youOwe = 0;
+    var youAreOwed = 0;
 
-    for (const [roommate, debt] of debts) {
+    for (const [_, debt] of debts) {
         if (debt > 0) {
-            you_are_owed += debt;
+            youAreOwed += debt;
         } else if (debt < 0) {
-            you_owe += debt;
+            youOwe += debt;
         }
     }
 
-    res.json({you_owe: you_owe, you_are_owed: you_are_owed});
+    res.json({youOwe, youAreOwed});
 });
 
 router.get("/:houseId/debts/:roommateId", async function(req, res) {
@@ -173,26 +171,24 @@ router.get("/:houseId/debts/:roommateId", async function(req, res) {
 
     var debts = {};
 
-    for (roommate of house.roommates) {
-        if (roommate != roommateId) {
+    for (var roommate of house.roommates) {
+        if (String(roommate) !== roommateId) {
             debts[roommate] = 0;
         }
     }
 
-    for (debt of allDebts) {
-        console.log(debt);
+    for (var debt of allDebts) {
         var amount = debt["amount"];
 
-        if (debt["payer"] == roommateId) {
+        if (String(debt["payer"]) === roommateId) {
             var roommate = debt["payee"].toString();
             debts[roommate] -= amount;
-        } else if (debt["payee"] == roommateId) {
+        } else if (String(debt["payee"]) == roommateId) {
             var roommate = debt["payer"].toString();
             debts[roommate] += amount;
         }
     }
 
-    console.log(debts);
     res.json(debts);
 });
 
@@ -206,13 +202,13 @@ router.get("/:houseId/debts_detailed/:roommateId", async function (req, res) {
 
     var debts = new Map();
 
-    for (roommate of house.roommates) {
-        if (roommate != roommateId) {
+    for (var roommate of house.roommates) {
+        if (String(roommate) !== roommateId) {
             debts[roommate] = 0;
         }
     }
 
-    for (debt of allDebts) {
+    for (var debt of allDebts) {
         var amount = debt["amount"];
 
         if (debt["payer"] == roommateId) {
@@ -226,17 +222,17 @@ router.get("/:houseId/debts_detailed/:roommateId", async function (req, res) {
 
     var debtsSummary = [];
     for (const [id, amount] of debts) {
-        var name = await knex('roommates')
-            .select('roommate_name')
-            .where('roommate_id', id);
-        name = name[0]['roommate_name'];
+        var name = await knex("roommates")
+            .select("roommate_name")
+            .where("roommate_id", id);
+        name = name[0]["roommate_name"];
 
-        if (amount != 0) {
-            debtsSummary.push({ roommate: id, amount: amount, roommate_name: name});
+        if (amount !== 0) {
+            debtsSummary.push({ roommate: id, amount, roommateName: name});
         }
     }
 
-    console.log(debtsSummary);
+    console.log(debtsSummary); // eslint-disable-line no-console
     res.json(debtsSummary);
 });
 
@@ -248,17 +244,17 @@ router.get("/:houseId/debts/:userRoommateId/:otherRoommateId", async function(re
 
     var allDebts = await debtCalculator.getAllDebts(knex, houseId);
 
-    var debts = allDebts.filter(d => (d.payee == userRoommateId &&
-        d.payer == otherRoommateId) || (d.payee == otherRoommateId &&
-        d.payer == userRoommateId));
+    var debts = allDebts.filter((d) => (String(d.payee) === userRoommateId &&
+        String(d.payer) === otherRoommateId) || (String(d.payee) === otherRoommateId &&
+        String(d.payer) === userRoommateId));
 
-    var purchases = debts.filter(d => d.type === "purchase")
-        .map(d => d.purchase);
+    var purchases = debts.filter((d) => d.type === "purchase")
+        .map((d) => d.purchase);
 
-    var reimbursements = debts.filter(d => d.type === "payed back")
-        .map(d => d.youoweme);
+    var reimbursements = debts.filter((d) => d.type === "payed back")
+        .map((d) => d.youoweme);
 
-    res.json({purchases: purchases, reimbursements: reimbursements});
+    res.json({purchases, reimbursements});
 });
 
 module.exports = router;

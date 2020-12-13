@@ -25,7 +25,6 @@ import ca.oneroof.oneroof.R;
 import ca.oneroof.oneroof.api.Division;
 import ca.oneroof.oneroof.api.Purchase;
 import ca.oneroof.oneroof.databinding.FragmentAddPurchaseBinding;
-import ca.oneroof.oneroof.ui.house.HomePgHasHouseFragmentDirections;
 import ca.oneroof.oneroof.viewmodel.HouseViewModel;
 
 /**
@@ -64,7 +63,7 @@ public class AddPurchaseFragment extends Fragment {
         memoText = view.findViewById(R.id.memo_text);
 
         DivisionEdit divEdit = new DivisionEdit(
-                viewmodel.house.data.getValue().data.roommate_names,
+                viewmodel.house.data.getValue().data.roommateNames,
                 viewmodel.house.data.getValue().data.roommates);
         divEdit.roommateEnables.set(viewmodel.house.data.getValue().data.roommates.indexOf(
                 viewmodel.roommateId.getValue()
@@ -80,7 +79,7 @@ public class AddPurchaseFragment extends Fragment {
 
     public void clickAddDivision(View v) {
         divisionEditAdapter.add(new DivisionEdit(
-                viewmodel.house.data.getValue().data.roommate_names,
+                viewmodel.house.data.getValue().data.roommateNames,
                 viewmodel.house.data.getValue().data.roommates));
     }
 

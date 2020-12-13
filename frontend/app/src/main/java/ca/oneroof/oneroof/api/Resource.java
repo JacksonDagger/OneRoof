@@ -1,7 +1,5 @@
 package ca.oneroof.oneroof.api;
 
-import android.util.Log;
-
 /**
  * A holder type for responses from the OneRoof API.  It can be in one of two states:
  * - a successful response from the API, holding a T (the type of the result of the particular API

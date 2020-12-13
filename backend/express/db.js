@@ -1,9 +1,9 @@
-var knex_init_file = require("./knexfile");
-var knex
+var knexInitFile = require("./knexfile");
+var knex;
 if (process.env.NODE_ENV === "test") {
-    knex = require("knex")(knex_init_file.test);
+    knex = require("knex")(knexInitFile.test);
   } else {
-    knex = require("knex")(knex_init_file.development);
+    knex = require("knex")(knexInitFile.production);
 }
 
 module.exports = knex;

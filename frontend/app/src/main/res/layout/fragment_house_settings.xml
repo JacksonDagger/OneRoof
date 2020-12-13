@@ -24,78 +24,37 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/edit_roommates_header"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="30dp"
-                android:gravity="center_horizontal"
-                android:text="House Settings"
-                android:textAllCaps="true"
-                android:textColor="#000000"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <Button
                 android:id="@+id/add_roommate_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="150dp"
                 android:backgroundTint="#875DD3"
+                android:drawableLeft="@drawable/ic_baseline_person_add_24"
+                android:drawablePadding="8dp"
                 android:text="Add Roommate"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/invite_code_input"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_roommates_header" />
-
-            <TextView
-                android:id="@+id/add_roommate_hdr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Add a New Roommate"
-                android:textAllCaps="true"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_roommates_header" />
-
-            <TextView
-                android:id="@+id/invite_code_hdr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:text="Invite Code: "
-                android:textAllCaps="true"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/add_roommate_btn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/add_roommate_hdr" />
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/invite_code_input" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/invite_code_input"
                 android:layout_width="174dp"
                 android:layout_height="wrap_content"
-                android:hint="123456"
-                app:layout_constraintBottom_toTopOf="@+id/add_roommate_btn"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/invite_code_hdr"
-                app:layout_constraintTop_toBottomOf="@+id/add_roommate_hdr">
+                android:hint="Invite code"
+                app:layout_constraintBottom_toTopOf="@+id/delete_house_btn"
+                app:layout_constraintEnd_toStartOf="@+id/add_roommate_btn"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/invite_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
                     android:gravity="center_horizontal"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -104,28 +63,17 @@
                 android:id="@+id/delete_house_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="60dp"
+                android:layout_marginTop="30dp"
                 android:backgroundTint="#875DD3"
-                android:text="Delete House"
                 android:onClick="@{fragment::clickDelete}"
+                android:text="Delete House"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                android:backgroundTint="#875DD3"
-                android:text="Remove Roommate"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/delete_house_btn"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/invite_code_input" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

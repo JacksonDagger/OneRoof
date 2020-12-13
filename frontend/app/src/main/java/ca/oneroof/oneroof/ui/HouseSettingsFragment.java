@@ -21,9 +21,6 @@ import ca.oneroof.oneroof.databinding.FragmentHouseSettingsBinding;
 import ca.oneroof.oneroof.viewmodel.HouseViewModel;
 
 public class HouseSettingsFragment extends Fragment {
-
-    private int inviteCode = -1; // indicator val
-
     private HouseViewModel viewmodel;
 
     @Override
@@ -51,7 +48,7 @@ public class HouseSettingsFragment extends Fragment {
             public void onClick(View view) {
                 AddRoommate addRoommate = new AddRoommate();
                 try {
-                    addRoommate.invite_code = Integer.parseInt(inviteCodeInput.getText().toString());
+                    addRoommate.inviteCode = Integer.parseInt(inviteCodeInput.getText().toString());
                 } catch (Exception e) {
                     // ignore invalid invites
                     return;

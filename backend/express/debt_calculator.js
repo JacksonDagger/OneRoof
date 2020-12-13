@@ -14,13 +14,15 @@ debtCalculator.getPurchaseInfo = async function (knex, purchase) {
 
     for (const [_, group] of Object.entries(groupedDivisions)) {
         var roommates = new Array();
-        group.forEach(roommate => {
+
+        for (var roommate of group) {
             roommates.push(roommate["division_roommate_join_roommate"]);
-        });
+        }
+        
         divisionsList.push({
             amount: group[0]["division_amount"], 
             memo: group[0]["division_memo"], 
-            roommates: roommates});
+            roommates});
     }
 
     var purchaseInfo = {
@@ -30,7 +32,7 @@ debtCalculator.getPurchaseInfo = async function (knex, purchase) {
         memo: purchase["purchase_memo"]};
 
     return purchaseInfo;
-}
+};
 
 debtCalculator.getPurchaseInfoWithIds = async function (knex, purchase) {
     var divisions = await knex.select("division_id", "division_amount", 
@@ -44,14 +46,14 @@ debtCalculator.getPurchaseInfoWithIds = async function (knex, purchase) {
 
     for (const [_, group] of Object.entries(groupedDivisions)) {
         var roommates = new Array();
-        group.forEach(roommate => {
+        for (var roommate of group) {
             roommates.push(roommate["division_roommate_join_roommate"]);
-        });
+        }
         divisionsList.push({
             id: group[0]["division_name"],
             amount: group[0]["division_amount"], 
             memo: group[0]["division_memo"], 
-            roommates: roommates});
+            roommates});
     }
 
     var purchaseInfo = {
@@ -62,7 +64,7 @@ debtCalculator.getPurchaseInfoWithIds = async function (knex, purchase) {
         memo: purchase["purchase_memo"]};
 
     return purchaseInfo;
-}
+};
 
 debtCalculator.getAllRoommatePairs = async function (knex, houseId) {
     var roommates = await knex.select()
@@ -79,7 +81,7 @@ debtCalculator.getAllRoommatePairs = async function (knex, houseId) {
     }
 
     return pairs;
-}
+};
 
 debtCalculator.getAllDebts = async function (knex, houseId) {
     var allPurchases = await knex.select("purchase_id", "purchase_roommate", 
@@ -91,20 +93,20 @@ debtCalculator.getAllDebts = async function (knex, houseId) {
 
     var purchasesInfo = new Array();
 
-    for (purchase of allPurchases) {
+    for (var purchase of allPurchases) {
         purchasesInfo.push(await this.getPurchaseInfoWithIds(knex, purchase));
     }
 
     var debts = new Array();
 
-    for (purchaseInfo of purchasesInfo) {
+    for (var purchaseInfo of purchasesInfo) {
         var purchaser = purchaseInfo["roommate"];
 
-        for (division of purchaseInfo["divisions"]) {
+        for (var division of purchaseInfo["divisions"]) {
             var numRoommates = division["roommates"].length;
             var amountPerRoommate = division["amount"] / numRoommates;
-            for (roommate of division["roommates"]) {
-                if (roommate != purchaser) {
+            for (var roommate of division["roommates"]) {
+                if (roommate !== purchaser) {
                     debts.push({
                         payee: purchaser, 
                         payer: roommate, 
@@ -125,7 +127,7 @@ debtCalculator.getAllDebts = async function (knex, houseId) {
         .where("youoweme_payed", true)
         .andWhere("house_id" , houseId);
 
-    for (youoweme of allYouowemes) {
+    for (var youoweme of allYouowemes) {
         debts.push({
             payee: youoweme.youoweme_me, 
             payer: youoweme.youoweme_you, 
@@ -136,7 +138,7 @@ debtCalculator.getAllDebts = async function (knex, houseId) {
     }
 
     return debts;
-}
+};
 
 debtCalculator.getTotalSpent = async function(knex, roommateId) {
     var allPurchases = await knex.select("purchase_id", "purchase_roommate", "purchase_amount")
@@ -146,26 +148,26 @@ debtCalculator.getTotalSpent = async function(knex, roommateId) {
 
     var purchasesInfo = new Array();
 
-    for (purchase of allPurchases) {
+    for (var purchase of allPurchases) {
         purchasesInfo.push(await this.getPurchaseInfo(knex, purchase));
     }
 
-    var purchase_amounts = [];
+    var purchaseAmounts = [];
 
-    for (purchaseInfo of purchasesInfo) {
-        for (division of purchaseInfo["divisions"]) {
+    for (var purchaseInfo of purchasesInfo) {
+        for (var division of purchaseInfo["divisions"]) {
             var numRoommates = division["roommates"].length;
             var amountPerRoommate = division["amount"] / numRoommates;
-            for (roommate of division["roommates"]) {
-                if (roommate == roommateId) {
-                    purchase_amounts.push(amountPerRoommate);
+            for (var roommate of division["roommates"]) {
+                if (String(roommate) === roommateId) {
+                    purchaseAmounts.push(amountPerRoommate);
                 }
             }
         }
     }
 
-    return purchase_amounts;
-}
+    return purchaseAmounts;
+};
 
 module.exports = debtCalculator;
 

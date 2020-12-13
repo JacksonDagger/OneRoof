@@ -12,21 +12,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ca.oneroof.oneroof.R;
-import ca.oneroof.oneroof.api.CreateHouseRequest;
 import ca.oneroof.oneroof.api.Debt;
-import ca.oneroof.oneroof.api.IdResponse;
 import ca.oneroof.oneroof.databinding.FragmentDebtSummaryBinding;
-import ca.oneroof.oneroof.ui.house.PurchaseListAdapter;
 import ca.oneroof.oneroof.viewmodel.HouseViewModel;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class DebtSummaryFragment extends Fragment {
     private HouseViewModel viewmodel;

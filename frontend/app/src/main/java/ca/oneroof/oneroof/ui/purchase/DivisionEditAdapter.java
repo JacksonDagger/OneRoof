@@ -3,19 +3,14 @@ package ca.oneroof.oneroof.ui.purchase;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,8 +19,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
+import ca.oneroof.oneroof.DollarUtils;
 import ca.oneroof.oneroof.R;
-import ca.oneroof.oneroof.Utils;
 import ca.oneroof.oneroof.databinding.ItemDivisionEditBinding;
 
 // danger: superfund cleanup site
@@ -53,7 +48,7 @@ public class DivisionEditAdapter extends ArrayAdapter<DivisionEdit> {
 
         DivisionEdit divisionEdit = list.get(position);
         EditText amount = binding.getRoot().findViewById(R.id.division_amount);
-        amount.setText(divisionEdit.amount > 0 ? Utils.formatDollars(divisionEdit.amount) : "");
+        amount.setText(divisionEdit.amount > 0 ? DollarUtils.formatDollars(divisionEdit.amount) : "");
 
         amount.addTextChangedListener(new TextWatcher() {
             @Override

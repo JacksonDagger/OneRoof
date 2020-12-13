@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.oneroof.oneroof.api.Purchase;
 import ca.oneroof.oneroof.api.Resource;
 
 /**

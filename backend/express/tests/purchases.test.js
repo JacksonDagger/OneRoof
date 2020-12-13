@@ -41,7 +41,7 @@ jest.mock("../modules/houses", () => {
 
 var houses = new Houses(knex, roommates);
 
-var Purchases = require("../modules/purchases")
+var Purchases = require("../modules/purchases");
 var purchases = new Purchases(knex, houses, roommates);
 
 afterEach(() => {
@@ -54,16 +54,16 @@ test("getPurchases", async () => {
     
     knex().select
         .mockResolvedValueOnce([{
-                purchase_id: 1,
-                purchase_roommate: 1,
-                roommate_name: "Maddie",
-                purchase_amount: 5000,
-                purchase_memo: "Earls",
+                "purchase_id": 1,
+                "purchase_roommate": 1,
+                "roommate_name": "Maddie",
+                "purchase_amount": 5000,
+                "purchase_memo": "Earls",
             }, {
-                purchase_id: 2,
-                purchase_roommate: 2,
-                roommate_name: "Alyssa",
-                purchase_amount: 2000
+                "purchase_id": 2,
+                "purchase_roommate": 2,
+                "roommate_name": "Alyssa",
+                "purchase_amount": 2000
             }
         ]);
     
@@ -71,13 +71,13 @@ test("getPurchases", async () => {
     expect(actual).toEqual([{
             id: 1,
             purchaser: 1,
-            purchaser_name: "Maddie",
+            purchaserName: "Maddie",
             amount: 5000,
             memo: "Earls",
         }, {
             id: 2,
             purchaser: 2,
-            purchaser_name: "Alyssa",
+            purchaserName: "Alyssa",
             amount: 2000
         }
     ]);
@@ -105,54 +105,54 @@ test("getPurchase", async () => {
     knex().select
         .mockResolvedValueOnce([
             {
-                purchase_id: 1,
-                purchase_roommate: 1,
-                roommate_name: "Maddie",
-                purchase_amount: 5000,
-                purchase_memo: "Earls",
+                "purchase_id": 1,
+                "purchase_roommate": 1,
+                "roommate_name": "Maddie",
+                "purchase_amount": 5000,
+                "purchase_memo": "Earls",
             }
         ])
         .mockResolvedValueOnce([
             {
-                division_id: 1,
-                division_amount: 3000,
-                division_memo: "Wings",
-                division_roommate_join_roommate: 1,
-                roommate_name: "Maddie"
+                "division_id": 1,
+                "division_amount": 3000,
+                "division_memo": "Wings",
+                "division_roommate_join_roommate": 1,
+                "roommate_name": "Maddie"
             }, 
             {
-                division_id: 1,
-                division_amount: 3000,
-                division_memo: "Wings",
-                division_roommate_join_roommate: 2,
-                roommate_name: "Alyssa"
+                "division_id": 1,
+                "division_amount": 3000,
+                "division_memo": "Wings",
+                "division_roommate_join_roommate": 2,
+                "roommate_name": "Alyssa"
             }, 
             {
-                division_id: 2,
-                division_amount: 2000,
-                division_memo: "Spinach Dip",
-                division_roommate_join_roommate: 1,
-                roommate_name: "Maddie"
+                "division_id": 2,
+                "division_amount": 2000,
+                "division_memo": "Spinach Dip",
+                "division_roommate_join_roommate": 1,
+                "roommate_name": "Maddie"
             }
         ]);
     
-    const actual = await purchases.getPurchase(1);
+    const actual = await purchases.getPurchase(1, 1, "uid");
     expect(actual).toEqual({
         roommate: 1, 
-        roommate_name: "Maddie",
+        roommateName: "Maddie",
         amount: 5000, 
         divisions: [
             {
                 amount: 3000, 
                 memo: "Wings", 
                 roommates: [1, 2], 
-                roommate_names: ["Maddie", "Alyssa"]
+                roommateNames: ["Maddie", "Alyssa"]
             },
             {
                 amount: 2000, 
                 memo: "Spinach Dip", 
                 roommates: [1], 
-                roommate_names: ["Maddie"]
+                roommateNames: ["Maddie"]
             }
         ], 
         memo: "Earls"
@@ -166,7 +166,7 @@ test("getPurchase with invalid purchase id", async () => {
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce([]);
     
-    await expect(async () => await purchases.getPurchase(99))
+    await expect(async () => await purchases.getPurchase(99, 1, "uid"))
         .rejects.toEqual(new NotFoundError("purchase id not found"));
 });
 
@@ -177,7 +177,7 @@ test("getPurchase with invalid requester", async () => {
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce([]);
     
-    await expect(async () => await purchases.getPurchase(99))
+    await expect(async () => await purchases.getPurchase(99, 1, "invalid uid"))
         .rejects.toEqual(new ForbiddenError("requester is not in house"));
 });
 
@@ -257,7 +257,7 @@ test("deletePurchase", async () => {
     roommates.isHouseOwnerOrSiteAdmin.mockResolvedValue(true);
 
     knex().del.mockResolvedValue(1);
-    const actual = await purchases.deletePurchase(1);
+    const actual = await purchases.deletePurchase(1, 1, "uid");
     expect(actual).toEqual(1);
 });
 
@@ -266,7 +266,7 @@ test("deletePurchase with invalid purchase id", async () => {
 
     knex().del.mockResolvedValue(0);
 
-    await expect(async () => await purchases.deletePurchase(99))
+    await expect(async () => await purchases.deletePurchase(99, 1, "uid"))
         .rejects.toEqual(new NotFoundError("purchase id not found"));
 });
 
@@ -275,7 +275,7 @@ test("deletePurchase with invalid requester", async () => {
 
     knex().del.mockResolvedValue(1);
 
-    await expect(async () => await purchases.deletePurchase(99))
+    await expect(async () => await purchases.deletePurchase(99, 1, "invalid uid"))
         .rejects.toEqual(new ForbiddenError("requester is not the admin nor a site admin"));
 });
 

@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,15 +32,10 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import ca.oneroof.oneroof.R;
-import ca.oneroof.oneroof.api.LoginRequest;
-import ca.oneroof.oneroof.api.LoginResponse;
 import ca.oneroof.oneroof.api.OneRoofAPI;
 import ca.oneroof.oneroof.api.OneRoofAPIUtils;
 import ca.oneroof.oneroof.viewmodel.HouseViewModel;
 import ca.oneroof.oneroof.viewmodel.HouseViewModelFactory;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,7 +45,7 @@ import retrofit2.Response;
 public class LoginFragment extends Fragment {
     private static final int RC_SIGN_IN = 1;
     public String authTestUser;
-    public boolean authDisabled = false;
+    public boolean authDisabled;
     private FirebaseAuth auth;
     private GoogleSignInClient googleSignInClient;
 
@@ -61,6 +56,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
 
         authDisabled = getActivity().getIntent().getBooleanExtra("authDisabled", false);
         authTestUser = getActivity().getIntent().getStringExtra("authTestUser");
@@ -78,7 +74,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        Button loginButton = view.findViewById(R.id.login_button);
+        SignInButton loginButton = view.findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,37 +164,13 @@ public class LoginFragment extends Fragment {
                             return;
                         }
                         Log.d("OneRoof", "FCM token: " + task.getResult().getToken());
-                        api.postLogin(new LoginRequest(task.getResult().getToken()))
-                                .enqueue(new Callback<LoginResponse>() {
-                                    @Override
-                                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                                        if (response.isSuccessful()) {
-                                            Log.d("OneRoof", "Roommate id: " + response.body().roommate_id);
-                                            Log.d("OneRoof", "House id: " + response.body().house_id);
-                                            houseViewModel.roommateId.setValue(response.body().roommate_id);
-                                            houseViewModel.roommateName.setValue(response.body().name);
-                                            if (response.body().house_id == null) {
-                                                Navigation.findNavController(getView())
-                                                        .navigate(LoginFragmentDirections.actionLoginFragmentToHomePgNoHouseFragment());
-                                            } else {
-                                                houseViewModel.houseId.setValue(response.body().house_id);
-                                                houseViewModel.isHouseLeader = response.body().roommate_id == response.body().admin;
-                                                Navigation.findNavController(getView())
-                                                        .navigate(LoginFragmentDirections.actionLoginFragmentToHomePgHasHouseFragment());
-                                            }
-                                        } else {
-                                            Log.d("OneRoof",
-                                                    "Failure to receive roommate id: " + response.message());
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<LoginResponse> call, Throwable t) {
-                                        Log.d("OneRoof", "Failure to post FCM token: "
-                                                + t.getLocalizedMessage());
-                                        loginFail();
-                                    }
-                                });
+                        houseViewModel.doLogin(task.getResult().getToken(), v -> {
+                            Navigation.findNavController(getView())
+                                    .navigate(LoginFragmentDirections.actionLoginFragmentToHomePgHasHouseFragment());
+                        }, v -> {
+                            Navigation.findNavController(getView())
+                                    .navigate(LoginFragmentDirections.actionLoginFragmentToHomePgNoHouseFragment());
+                        });
                     }
                 });
     }

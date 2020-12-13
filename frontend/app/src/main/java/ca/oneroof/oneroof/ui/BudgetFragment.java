@@ -1,29 +1,19 @@
 package ca.oneroof.oneroof.ui;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputEditText;
 
 import ca.oneroof.oneroof.R;
-import ca.oneroof.oneroof.api.Resource;
-import ca.oneroof.oneroof.api.BudgetStats;
 import ca.oneroof.oneroof.api.BudgetUpdate;
 import ca.oneroof.oneroof.databinding.FragmentBudgetBinding;
-import ca.oneroof.oneroof.databinding.FragmentHomePgHasHouseBinding;
 import ca.oneroof.oneroof.viewmodel.HouseViewModel;
 
 public class BudgetFragment extends Fragment {
@@ -46,9 +36,11 @@ public class BudgetFragment extends Fragment {
         binding.setFragment(this);
         binding.setLifecycleOwner(this);
 
+        viewmodel.budgetStats.refresh();
+
         View view = binding.getRoot();
         editBudget = view.findViewById(R.id.monthly_budget_text_input);
-
+        
         return view;
     }
 
@@ -58,7 +50,7 @@ public class BudgetFragment extends Fragment {
             int budgetCents = (int) (budget * 100);
             BudgetUpdate update = new BudgetUpdate();
             update.limit = budgetCents;
-            viewmodel.postBudget(update);
+            viewmodel.patchBudget(update);
         } catch (NumberFormatException e) {
             // Ignore invalid budgets
         }

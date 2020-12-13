@@ -16,19 +16,19 @@ router.post("/login", async function(req, res) {
         .from("roommates")
         .where("roommate_uid", uid);
 
-  var roommateID;
+  var roommateId;
   var roommateName;
   var existingFCM;
   var roommateHouse;
 
   if (roommate.length === 0){
-    roommateID = await knex("roommates")
+    roommateId = await knex("roommates")
         .insert({"roommate_name": res.locals.user.name, "roommate_uid": uid, "roommate_house": null, "roommate_budget": 1000});
-    roommateID = roommateID[0];
+    roommateId = roommateId[0];
     roommateName = res.locals.user.name;
   }
   else {
-    roommateID = roommate[0]["roommate_id"];
+    roommateId = roommate[0]["roommate_id"];
     roommateName = roommate[0]["roommate_name"];
     roommateHouse = roommate[0]["roommate_house"];
   }
@@ -38,10 +38,10 @@ router.post("/login", async function(req, res) {
 
   if (existingFCM.length === 0) {
     await knex("tokens")
-        .insert({"token": fcm, "roommate_id": roommateID});
+        .insert({"token": fcm, "roommate_id": roommateId});
   }
   
-  console.log("Name: " + roommateName);
+  console.log("Name: " + roommateName); // eslint-disable-line no-console
   
   var house = await knex("houses")
     //.where("house_id", roommateHouse)
@@ -50,22 +50,22 @@ router.post("/login", async function(req, res) {
 
   var admin = house.length > 0 ? house[0].house_admin : null;
 
-  var r = {"roommate_id": roommateID, "name": roommateName, "invite_code": roommateID, "house_id": roommateHouse, "admin": admin, "roommate_budget": 1000};
-  console.log(r)
+  var r = {roommateId, name: roommateName, inviteCode: roommateId, houseId: roommateHouse, admin};
+  console.log(r); // eslint-disable-line no-console
   res.json(r);
 });
 
 // Remove after M9?
 router.post("/payment", async function (req, res) {
   var d = {
-    youoweme_me: req.body.me,
-    youoweme_you: req.body.you,
-    youoweme_create_date: new Date(),
-    youoweme_payed: true,
-    youoweme_amount: req.body.amount
+    "youoweme_me": req.body.me,
+    "youoweme_you": req.body.you,
+    "youoweme_create_date": new Date(),
+    "youoweme_payed": true,
+    "youoweme_amount": req.body.amount,
   };
-  console.log(d);
-  await knex('youowemes')
+  console.log(d); // eslint-disable-line no-console
+  await knex("youowemes")
     .insert(d);
   res.sendStatus(200);
 });
@@ -73,9 +73,5 @@ router.post("/payment", async function (req, res) {
 router.get("/", function(req, res, next) {
   res.send("Welcome to the One Roof API!");
 });
-
-router.post("/receipt-ocr", function(req, res) {
-  res.send("Upload receipt and return total");
-})
 
 module.exports = router;

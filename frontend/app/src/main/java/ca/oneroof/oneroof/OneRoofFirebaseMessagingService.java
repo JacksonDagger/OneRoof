@@ -2,7 +2,10 @@ package ca.oneroof.oneroof;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
@@ -12,6 +15,8 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import ca.oneroof.oneroof.ui.MainActivity;
+
 public class OneRoofFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
@@ -20,13 +25,18 @@ public class OneRoofFirebaseMessagingService extends FirebaseMessagingService {
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
 
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntent(mainIntent);
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(notification.getTitle())
                 .setContentText(notification.getBody())
                 .setChannelId("youoweme")
 //                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
 //                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setSmallIcon(R.mipmap.ic_launcher);
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT));
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 

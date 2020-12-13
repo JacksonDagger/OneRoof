@@ -5,5 +5,5 @@ import java.util.ArrayList;
 public class Division {
     public int amount;
     public ArrayList<Integer> roommates;
-    public ArrayList<String> roommate_names;
+    public ArrayList<String> roommateNames;
 }

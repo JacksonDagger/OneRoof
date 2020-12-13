@@ -7,7 +7,7 @@
     <data>
 
         <import type="ca.oneroof.oneroof.ui.BudgetFragment" />
-        <import type="ca.oneroof.oneroof.Utils" />
+        <import type="ca.oneroof.oneroof.DollarUtils" />
 
         <variable
             name="viewmodel"
@@ -111,13 +111,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="30dp"
-                android:text="@{Utils.formatDollarsSign(viewmodel.budgetStats.data.data.monthly_spending)}"
+                android:text="@{DollarUtils.formatDollarsSign(viewmodel.budgetStats.data.data.monthlySpending)}"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/statistics_header"
-                tools:text="Spending" />
+                app:layout_constraintTop_toBottomOf="@+id/statistics_header" />
 
             <TextView
                 android:id="@+id/avg_purchase_price_data"
@@ -125,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="30dp"
-                android:text="@{Utils.formatDollarsSign((int) viewmodel.budgetStats.data.data.mean_purchase)}"
+                android:text="@{DollarUtils.formatDollarsSign((int) viewmodel.budgetStats.data.data.meanPurchase)}"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -138,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="30dp"
-                android:text="@{String.valueOf(viewmodel.budgetStats.data.data.number_of_purchases)}"
+                android:text="@{String.valueOf(viewmodel.budgetStats.data.data.numberOfPurchases)}"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -151,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="30dp"
-                android:text="@{Utils.formatDollarsSign(viewmodel.budgetStats.data.data.most_expensive_purchase)}"
+                android:text="@{DollarUtils.formatDollarsSign(viewmodel.budgetStats.data.data.mostExpensivePurchase)}"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -193,7 +192,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/monthly_budget" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/dollar_sign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
@@ -211,24 +210,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="30dp"
-                android:text="@{Utils.formatDollars(viewmodel.budgetStats.data.data.monthly_budget)}"
+                android:text="@{DollarUtils.formatDollarsSign(viewmodel.budgetStats.data.data.budget)}"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="5dp"
-                android:text="$"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/current_monthly_budget"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -255,8 +241,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/most_expensive_purchase_data"
-                tools:text="Likelihood" />
+                app:layout_constraintTop_toBottomOf="@+id/most_expensive_purchase_data" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </layout>

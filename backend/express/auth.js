@@ -16,11 +16,11 @@ function firebaseAuthMiddleware(req, res, next) {
     auth = auth.slice(7, auth.length);
 
     admin.auth().verifyIdToken(auth)
-        .then(decoded => {
+        .then((decoded) => {
             res.locals.user = decoded;
             next();
         })
-        .catch(err => {
+        .catch((err) => {
             console.log(`Unauthorized: ${err}`); // eslint-disable-line no-console
             res.sendStatus(401);
         });
@@ -29,14 +29,14 @@ function firebaseAuthMiddleware(req, res, next) {
 function noAuthMiddleware(req, res, next) {
     var uid = req.headers.authorization || "Bearer foo";
     uid = uid.slice(7, uid.length);
-    res.locals.user = { uid: uid, email: "no email", name: uid };
+    res.locals.user = { uid, email: "no email", name: uid };
     console.log(`Doing fake login for uid: ${uid}`); // eslint-disable-line no-console
     next();
 }
 
-const authMiddleware = AUTH_DISABLED == 1 ? noAuthMiddleware : firebaseAuthMiddleware;
+const authMiddleware = AUTH_DISABLED === "1" ? noAuthMiddleware : firebaseAuthMiddleware;
 
 module.exports = {
     AUTH_DISABLED, 
     authMiddleware
-}
+};

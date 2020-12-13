@@ -1,7 +1,6 @@
 package ca.oneroof.oneroof.ui;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,12 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import ca.oneroof.oneroof.R;
-import ca.oneroof.oneroof.viewmodel.HouseViewModel;
 
 // reference: https://guides.codepath.com/android/using-the-recyclerview
 public class RoommateNameAdapter extends RecyclerView.Adapter<RoommateNameAdapter.ViewHolder> {
+    private ArrayList<String> roommates;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
@@ -28,12 +26,8 @@ public class RoommateNameAdapter extends RecyclerView.Adapter<RoommateNameAdapte
         }
     }
 
-    private ArrayList<String> roommates;
-    private String user_name;
-
-    public RoommateNameAdapter(ArrayList<String> roommates, String user_name) {
+    public RoommateNameAdapter(ArrayList<String> roommates) {
         this.roommates = roommates;
-        this.user_name = user_name;
     }
 
     @Override
@@ -49,8 +43,6 @@ public class RoommateNameAdapter extends RecyclerView.Adapter<RoommateNameAdapte
     @Override
     public void onBindViewHolder(RoommateNameAdapter.ViewHolder holder, int position) {
         String roommate = roommates.get(position);
-        // if this is the user's name, don't display it
-        if (roommate.equals(user_name)) { return; }
 
         TextView textView = holder.nameTextView;
         textView.setText(roommate);
@@ -58,7 +50,6 @@ public class RoommateNameAdapter extends RecyclerView.Adapter<RoommateNameAdapte
 
     @Override
     public int getItemCount() {
-        // exclude current user in count, since we won't display their name
-        return roommates.size() - 1;
+        return roommates.size();
     }
 }

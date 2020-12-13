@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Purchase {
     public String memo;
     public int purchaser;
-    public String purchaser_name;
+    public String purchaserName;
     public ArrayList<Division> divisions;
     public int amount;
 

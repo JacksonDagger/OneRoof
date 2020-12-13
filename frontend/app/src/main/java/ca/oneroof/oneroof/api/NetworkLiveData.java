@@ -2,7 +2,6 @@ package ca.oneroof.oneroof.api;
 
 import android.util.Log;
 
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 

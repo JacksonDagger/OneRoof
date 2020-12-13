@@ -22,7 +22,6 @@ public class RequestPaymentFragment extends Fragment {
      *
      * @return A new instance of fragment RequestPaymentFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static RequestPaymentFragment newInstance() {
         RequestPaymentFragment fragment = new RequestPaymentFragment();
         return fragment;

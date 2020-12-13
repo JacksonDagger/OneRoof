@@ -37,7 +37,7 @@ function hypergeom(a, b, c, z){
     var sum = 0;
     for(n = 0; n < 60; n++){
         sum += (pochhammer(a, n) * pochhammer(b, n) / (pochhammer(c, n) * factorial(n)) )* (z ** n) ;
-        console.log(sum);
+        console.log(sum); // eslint-disable-line no-console
     }
     return sum;
 }
@@ -93,7 +93,7 @@ budgetCalculator.tDistCDF = function tDistCDF(t, v){
 
     }
     return cp;    
-}
+};
 
 
 budgetCalculator.budgetPredictionFromList = function budgetPredictionFromList(purchases, limit){
@@ -118,10 +118,10 @@ budgetCalculator.budgetPredictionFromList = function budgetPredictionFromList(pu
             return {
                 "budget": limit,
                 "likelihood": 0,
-                "mean_purchase": 0,
-                "number_of_purchases": 0,
-                "most_expensive_purchase": 0,
-                "monthly_spending": 0
+                "meanPurchase": 0,
+                "numberOfPurchases": 0,
+                "mostExpensivePurchase": 0,
+                "monthlySpending": 0
               };
         }
         else{
@@ -137,10 +137,10 @@ budgetCalculator.budgetPredictionFromList = function budgetPredictionFromList(pu
             return  {
                 "budget": limit,
                 "likelihood": probability,
-                "mean_purchase": purchases[0],
-                "number_of_purchases": purchases.length,
-                "most_expensive_purchase": purchases[0],
-                "monthly_spending": purchases[0]
+                "meanPurchase": purchases[0],
+                "numberOfPurchases": purchases.length,
+                "mostExpensivePurchase": purchases[0],
+                "monthlySpending": purchases[0]
               };
         }
     }
@@ -166,23 +166,26 @@ budgetCalculator.budgetPredictionFromList = function budgetPredictionFromList(pu
     return {
         "budget": limit,
         "likelihood": probability,
-        "mean_purchase": mean,
-        "number_of_purchases": validPurchasesCount,
-        "most_expensive_purchase": max,
-        "monthly_spending": sum
+        "meanPurchase": mean,
+        "numberOfPurchases": validPurchasesCount,
+        "mostExpensivePurchase": max,
+        "monthlySpending": sum
       };
-}
+};
 
 
-budgetCalculator.budgetPrediction = async function budgetPrediction(roommateID){
-    var purchases = await debtCalculator.getTotalSpent(knex, roommateID);
+budgetCalculator.budgetPrediction = async function budgetPrediction(roommateId){
+    var purchases = await debtCalculator.getTotalSpent(knex, roommateId);
 
-    budget = await knex.select("roommate_budget")
-    .from("roommates")
-    .where("roommate_id", roommateID);
+    var budget = await knex.select("roommate_budget")
+        .from("roommates")
+        .where("roommate_id", roommateId);
 
-    var limit = budget[0];
-    limit = limit >= 0 ? limit["budget_goal"] : 1000;
+    if (budget.length === 0) {
+        return null;
+    }
+
+    var limit = budget[0]["roommate_budget"];
 
     console.log(purchases); // eslint-disable-line no-console
 

@@ -1,7 +1,5 @@
 package ca.oneroof.oneroof.ui;
 
-import androidx.test.core.app.ActivityScenario;
-
 import org.junit.Test;
 
 import java.util.Random;
@@ -10,8 +8,6 @@ import static ca.oneroof.oneroof.TestUtils.createHouseInviteOther;
 import static ca.oneroof.oneroof.TestUtils.createSharedPurchase;
 
 public class PurchaseTest {
-    private ActivityScenario<MainActivity> scenario;
-
     // To run this test, run the backend with AUTH_DISABLED=1.
     @Test
     public void purchaseTest() {

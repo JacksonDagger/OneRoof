@@ -28,24 +28,32 @@ class Purchases {
                         "purchase_amount", "purchase_memo",
                         "roommate_name");
         
-            return purchases.map(p => {
+            return purchases.map((p) => {
                 return {
                     id: p.purchase_id,
                     purchaser: p.purchase_roommate,
-                    purchaser_name: p.roommate_name,
+                    purchaserName: p.roommate_name,
                     amount: p.purchase_amount,
                     memo: p.purchase_memo,
                 };
             });
         
-        }
+        };
         
-        this.getPurchase = async function (purchaseId) {
+        this.getPurchase = async function (purchaseId, houseId, uid) {
+            if (!(await this.roommates.checkIfUserIsInHouse(uid, houseId))) {
+                throw new ForbiddenError("requester is not in house");
+            }
+
             var purchase = await this.knex("purchases")
                 .join("roommates", "purchase_roommate", "=", "roommate_id")
                 .where("purchase_id", purchaseId)
                 .select("purchase_roommate", "purchase_amount", 
                     "purchase_memo", "roommate_name");
+
+            if (purchase.length === 0) {
+                throw new NotFoundError("purchase id not found");
+            }
         
             var divisions = await this.knex("divisions")
                 .join("division_roommate_join", "division_roommate_join_division", 
@@ -60,26 +68,37 @@ class Purchases {
             var divisionsList = new Array();
             for (const [_, group] of Object.entries(groupedDivisions)) {
                 var roommates = new Array();
-                group.forEach(roommate => {
+
+                for (var roommate of group) {
                     roommates.push(roommate["division_roommate_join_roommate"]);
-                });
-                var roommate_names = group.map(d => d.roommate_name);
+                }
+    
+                var roommateNames = group.map((d) => d.roommate_name);
                 divisionsList.push({amount: group[0]["division_amount"], 
-                    memo: group[0]["division_memo"], roommates: roommates, roommate_names});
+                    memo: group[0]["division_memo"], roommates, roommateNames});
             }
         
-            return {
-                roommate: purchase[0]["purchase_roommate"], 
-                roommate_name: purchase[0]["roommate_name"],
+            return { roommate: purchase[0]["purchase_roommate"], 
+                roommateName: purchase[0]["roommate_name"],
                 amount: purchase[0]["purchase_amount"], 
                 divisions: divisionsList, 
-                memo: purchase[0]["purchase_memo"]};
-        }
+                memo: purchase[0]["purchase_memo"] };
+        };
         
-        this.addPurchase = async function (purchaser, amount, memo, divisions) {
+        this.addPurchase = async function (purchaser, amount, memo, 
+                divisions, houseId, uid) {
+
+            if (!(await this.houses.validateHouseId(houseId))) {
+                throw new NotFoundError("house id not found");
+            }
+
+            if (!(await this.roommates.checkIfUserIsInHouse(uid, houseId))) {
+                throw new ForbiddenError("requester is not in house");
+            }
+
             var purchaseId = await this.knex("purchases")
-                .insert({purchase_amount: amount, 
-                purchase_memo: memo, purchase_roommate: purchaser});
+                .insert({"purchase_amount": amount, 
+                "purchase_memo": memo, "purchase_roommate": purchaser});
         
             var allRoommates = new Set();
             for (var division of divisions) {
@@ -87,17 +106,17 @@ class Purchases {
                 var divisionMemo = division["memo"];
                 var roommates = division["roommates"];
         
-                roommates.forEach(r => allRoommates.add(r));
+                roommates.forEach((r) => allRoommates.add(r));
         
                 var divisionId = await this.knex("divisions")
-                    .insert({division_purchase: purchaseId, 
-                        division_amount: divisionAmount,
-                        division_memo: divisionMemo});
+                    .insert({"division_purchase": purchaseId, 
+                        "division_amount": divisionAmount,
+                        "division_memo": divisionMemo});
         
                 for (var roommateId of roommates) {
                     await this.knex("division_roommate_join")
-                        .insert({division_roommate_join_division: divisionId[0],
-                        division_roommate_join_roommate: roommateId});
+                        .insert({"division_roommate_join_division": divisionId[0],
+                        "division_roommate_join_roommate": roommateId});
                 }
             }
         
@@ -121,7 +140,7 @@ class Purchases {
                     title: `Purchase by ${purchaserName.roommate_name} ($${Math.floor(amount / 100)}.${amount % 100})`,
                     body: `You share the cost of this purchase: ${memo}`
                 },
-                tokens: tokens,
+                tokens,
               };
             
             if (tokens.length > 0) {
@@ -130,15 +149,23 @@ class Purchases {
             }
             
             return purchaseId[0];
-        }
+        };
         
-        this.deletePurchase = async function (purchaseId) {
+        this.deletePurchase = async function (purchaseId, houseId, uid) {
+            if (!(await this.roommates.isHouseOwnerOrSiteAdmin(uid, houseId))) {
+                throw new ForbiddenError("requester is not the admin nor a site admin");
+            }
+
             var rowsDeleted = await this.knex("purchases")
                 .where("purchase_id", purchaseId)
                 .del();
+
+            if (rowsDeleted === 0) {
+                throw new NotFoundError("purchase id not found");
+            }
                 
             return rowsDeleted;
-        }
+        };
     }
 }
 

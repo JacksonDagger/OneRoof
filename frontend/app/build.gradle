@@ -25,13 +25,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-            resValue("string", "api_url", "https://example.com")
+            resValue("string", "api_url", "https://node-2v2sk5bl3b27k.azurewebsites.net")
         }
 
         debug {
-            resValue("string", "api_url", "http://10.0.2.2:3000")
-//            resValue("string", "api_url", "https://oneroof-prod.azurewebsites.net/")
+            resValue("string", "api_url", "https://oneroof-prod.azurewebsites.net/")
+            //resValue("string", "api_url", "https://node-2v2sk5bl3b27k.azurewebsites.net")
         }
     }
 

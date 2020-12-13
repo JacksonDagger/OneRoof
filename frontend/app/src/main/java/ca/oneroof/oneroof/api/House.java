@@ -8,5 +8,5 @@ public class House {
     public String name;
     public int admin;
     public ArrayList<Integer> roommates;
-    public ArrayList<String> roommate_names;
+    public ArrayList<String> roommateNames;
 }

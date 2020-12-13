@@ -60,7 +60,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/no_house_header" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/invite_code_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="52dp"
@@ -81,10 +81,10 @@
                 android:textAlignment="center"
                 android:textColor="#000000"
                 android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="@+id/textView"
+                app:layout_constraintEnd_toEndOf="@+id/invite_code_header"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintStart_toStartOf="@+id/invite_code_header"
+                app:layout_constraintTop_toBottomOf="@+id/invite_code_header"
                 tools:text="123456" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package ca.oneroof.oneroof;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
@@ -12,9 +11,6 @@ import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
 
 import org.hamcrest.Matcher;
-import org.junit.Test;
-
-import java.util.Random;
 
 import ca.oneroof.oneroof.ui.MainActivity;
 
@@ -31,6 +27,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
+import static android.os.SystemClock.sleep;
 
 public class TestUtils {
     public static String getText(ViewInteraction matcher) {
@@ -72,6 +69,7 @@ public class TestUtils {
                 .perform(replaceText(houseName));
         onView(withText("Create"))
                 .perform(click());
+        sleep(1000);
 
         // We should be in the house right now.  Check that we see a list of purchases.
         onView(withId(R.id.house_purchases))
@@ -99,7 +97,6 @@ public class TestUtils {
 
         onView(withId(R.id.action_profile))
                 .perform(click());
-
         onView(withId(R.id.house_settings_btn))
                 .perform(click());
 
@@ -109,10 +106,11 @@ public class TestUtils {
 
         onView(withId(R.id.add_roommate_btn))
                 .perform(click());
+        sleep(1000);
 
-        // Check that we're back in the profile page
-        onView(withId(R.id.house_name))
-                .check(matches(withText(houseName)));
+        // Check that we're back in the home page
+        onView(withId(R.id.house_purchases))
+                .check(matches(isDisplayed()));
 
         scenario.close();
     }
@@ -130,6 +128,7 @@ public class TestUtils {
         // Click login button with the mock login setup.
         onView(withId(R.id.login_button))
                 .perform(click());
+        sleep(1000);
 
         return scenario;
     }
@@ -145,6 +144,7 @@ public class TestUtils {
         // Hit the add purchase button.
         onView(withId(R.id.add_purchase_button))
                 .perform(click());
+        sleep(1000);
 
         // Type "10" into the first division.
         onData(anything())
@@ -163,17 +163,18 @@ public class TestUtils {
         onData(anything())
                 .inAdapterView(withId(R.id.division_list)).atPosition(1)
                 .onChildView(withId(R.id.division_amount))
-                .perform(replaceText(Utils.formatDollars(user2Cents)));
+                .perform(replaceText(DollarUtils.formatDollars(user2Cents)));
 
         // Make the second user owe us for the 20 dollars.
         onData(anything())
                 .inAdapterView(withId(R.id.division_list)).atPosition(1)
                 .onChildView(allOf(withId(R.id.roommate_toggle), withText(user2)))
                 .perform(click());
+        sleep(1000);
 
         // Total should now read 30.
         onView(withId(R.id.purchase_total))
-                .check(matches(withText(Utils.formatDollars(1000 + user2Cents))));
+                .check(matches(withText(DollarUtils.formatDollars(1000 + user2Cents))));
 
         onView(withId(R.id.memo_text))
                 .perform(replaceText(memo));
@@ -181,6 +182,7 @@ public class TestUtils {
         // Make the purchase.
         onView(withId(R.id.action_save_purchase))
                 .perform(click());
+        sleep(1000);
 
         scenario.close();
 
@@ -193,7 +195,7 @@ public class TestUtils {
         onView(withId(R.id.house_purchases))
                 .perform(scrollToPosition(0))
                 .check(matches(hasDescendant(allOf(withId(R.id.purchase_amount),
-                        withText("$" + Utils.formatDollars(1000 + user2Cents))))));
+                        withText("$" + DollarUtils.formatDollars(1000 + user2Cents))))));
         onView(withId(R.id.house_purchases))
                 .perform(scrollToPosition(0))
                 .check(matches(hasDescendant(allOf(withId(R.id.purchase_memo), withText(memo)))));
@@ -201,11 +203,8 @@ public class TestUtils {
         scenario.close();
     }
 
-    public static void checkStats(ActivityScenario<MainActivity> scenario, String budget,
-                                  String monthly_spending, String avg_purchase_price,
-                                  String num_purchases, String most_expensive_purchase,
-                                  String likelihood) {
-        // not sure if scenario arg is needed for context
+    public static void checkStats(String budget, String monthly_spending, String avg_purchase_price,
+                                  String num_purchases, String most_expensive_purchase) {
         onView(withId(R.id.current_monthly_budget))
                 .check(matches(withText(budget)));
         onView(withId(R.id.monthly_spending_data))
@@ -216,15 +215,14 @@ public class TestUtils {
                 .check(matches(withText(num_purchases)));
         onView(withId(R.id.most_expensive_purchase_data))
                 .check(matches(withText(most_expensive_purchase)));
-        onView(withId(R.id.likelihood_data))
-                .check(matches(withText(likelihood)));
     }
 
-    public static void setBudget(ActivityScenario<MainActivity> scenario, String newBudget) {
+    public static void setBudget(String newBudget) {
         // enter a new budget and click on update
         onView(withId(R.id.monthly_budget_text_input))
                 .perform(replaceText(newBudget));
         onView(withId(R.id.update_budget_btn))
                 .perform(click());
+        sleep(1000);
     }
 }
