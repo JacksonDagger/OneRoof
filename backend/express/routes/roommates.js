@@ -85,7 +85,7 @@ router.patch("/:roommateId/budget", async function (req, res) {
     const roommateId = req.params["roommateId"];
     const budget = req.body.limit;
     try {
-        await knex("roommates")
+        const count = await knex("roommates")
         .update("roommate_budget", budget)
         .where("roommate_id", roommateId);
         res.sendStatus(200);
