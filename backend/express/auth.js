@@ -27,14 +27,14 @@ function firebaseAuthMiddleware(req, res, next) {
 }
 
 function noAuthMiddleware(req, res, next) {
-    var uid = req.headers.authorization || "Bearer foo";
+    var uid = req.headers.authorization || req.body.uid || "Bearer foo";
     uid = uid.slice(7, uid.length);
-    res.locals.user = { uid, email: "no email", name: uid };
+    res.locals.user = {"uid": uid, email: "no email", name: uid };
     console.log(`Doing fake login for uid: ${uid}`); // eslint-disable-line no-console
     next();
 }
 
-const authMiddleware = AUTH_DISABLED === "1" ? noAuthMiddleware : firebaseAuthMiddleware;
+const authMiddleware = AUTH_DISABLED === true ? noAuthMiddleware : firebaseAuthMiddleware;
 
 module.exports = {
     AUTH_DISABLED, 

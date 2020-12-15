@@ -5,13 +5,14 @@ const app = require('../app')
 beforeAll(async () => {
     await knex.migrate.latest()
     .then(function() {
-    return knex.seed.run();
+        console.log('got here');
+        return knex.seed.run();
     });
 });
 
 afterAll(async(done) => {
-    await knex.destroy()
-    done()
+    await knex.destroy();
+    done();
 })
 
 describe("Houses endpoints", () => {
@@ -20,15 +21,16 @@ describe("Houses endpoints", () => {
             .post('/houses/')
             .send({
                 name: "Test house",
-                uid: 0
+                uid: "Bearer 1"
             });
+        console.log(res.body)
         expect(res.body.id).toEqual(2);
     });
 
     it("should get a house", async () => {
         const res = await request(app)
             .get('/houses/')
-            .query({"houseId": 2})
+            .query({"houseId": 1})
             .send();
     });
 
@@ -48,7 +50,7 @@ describe("Index endpoints", () => {
             .send({
                 fcm: "fcm test",
             });
-        expect(res.body.invite_code).toEqual(3);
+        expect(res.body.inviteCode).toEqual(2);
     });
 });
 
