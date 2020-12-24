@@ -61,6 +61,7 @@ typings/
 .next
 
 # database passwords for knex
+knexfile.js
 dev.sqlite3
 oneroof-20f41-firebase-adminsdk-up001-48645a9bc3.json
 secrets/
