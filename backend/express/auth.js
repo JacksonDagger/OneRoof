@@ -7,7 +7,6 @@ admin.initializeApp({
 const AUTH_DISABLED = process.env.AUTH_DISABLED || process.env.NODE_ENV === "test";
 
 function firebaseAuthMiddleware(req, res, next) {
-    console.log(AUTH_DISABLED);
     var auth = req.header("Authorization");
     if (!auth || !auth.startsWith("Bearer ")) {
         console.log("Unauthorized: invalid bearer token."); // eslint-disable-line no-console

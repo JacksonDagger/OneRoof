@@ -6,8 +6,6 @@ const { AUTH_DISABLED } = require("../auth");
 beforeAll(async () => {
     await knex.migrate.latest()
     .then(function() {
-        console.log(process.env.NODE_ENV);
-        console.log(process.env.AUTH_DISABLED);
         return knex.seed.run();
     });
 });
@@ -26,7 +24,7 @@ describe("Houses endpoints", () => {
                 uid: "Bearer 1"
             });
         console.log(res.body);
-        expect(res.body.id).toEqual(2);
+        expect(res.body.id).toEqual(3);
     });
 
     it("should get a house", async () => {
@@ -52,7 +50,7 @@ describe("Index endpoints", () => {
             .send({
                 fcm: "fcm test",
             });
-        expect(res.body.inviteCode).toEqual(2);
+        expect(res.body.inviteCode).toEqual(5);
     });
 });
 
