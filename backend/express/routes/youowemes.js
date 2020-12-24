@@ -39,7 +39,7 @@ router.post("/", async function(req, res) {
                 });
         }
         else {
-            var id = await knex("youowemes")
+            id = await knex("youowemes")
                 .insert({"youoweme_you": target,
                     "youoweme_me": 0,
                     "youoweme_amount": amount,
@@ -50,7 +50,7 @@ router.post("/", async function(req, res) {
         .then((response) => {
             console.log(response.successCount + " messages were sent successfully"); // eslint-disable-line no-console
         });
-        res.json({id: id[0]});
+        res.json({"id": id[0]});
     } catch (error) {
         console.log(error); // eslint-disable-line no-console
         res.status(error.status || 500).send(error.message);

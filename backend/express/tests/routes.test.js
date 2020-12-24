@@ -1,11 +1,11 @@
-const request = require('supertest')
+const request = require("supertest");
 const knex = require("../db");
-const app = require('../app')
+const app = require("../app");
 
 beforeAll(async () => {
     await knex.migrate.latest()
     .then(function() {
-        console.log('got here');
+        console.log("got here");
         return knex.seed.run();
     });
 });
@@ -18,25 +18,25 @@ afterAll(async(done) => {
 describe("Houses endpoints", () => {
     it("should create a new house", async () => {
         const res = await request(app)
-            .post('/houses/')
+            .post("/houses/")
             .send({
                 name: "Test house",
                 uid: "Bearer 1"
             });
-        console.log(res.body)
+        console.log(res.body);
         expect(res.body.id).toEqual(2);
     });
 
     it("should get a house", async () => {
         const res = await request(app)
-            .get('/houses/')
+            .get("/houses/")
             .query({"houseId": 1})
             .send();
     });
 
     it("should fail to get a house", async () => {
         const res = await request(app)
-            .get('/houses/')
+            .get("/houses/")
             .query({ houseId: 321})
             .send();
         expect(res.statusCode).toEqual(404);
@@ -46,7 +46,7 @@ describe("Houses endpoints", () => {
 describe("Index endpoints", () => {
     it("should login", async () => {
         const res = await request(app)
-            .post('/login')
+            .post("/login")
             .send({
                 fcm: "fcm test",
             });
@@ -57,7 +57,7 @@ describe("Index endpoints", () => {
 describe("Roommates endpoints", () => {
     it("should add roommate", async () => {
         const res = await request(app)
-            .post('/roommates/login')
+            .post("/roommates/login")
             .send({
                 name: "test roommate",
             });
@@ -67,7 +67,7 @@ describe("Roommates endpoints", () => {
 describe("Youowemes endpoints", () => {
     it("should send youoweme", async () => {
         const res = await request(app)
-            .patch('/youowemes')
+            .patch("/youowemes")
             .query({"youowemeId": 1})
             .send({
                 payed: true

@@ -59,21 +59,21 @@ budgetCalculator.tDistCDF = function tDistCDF(t, v){
     if(t < 0){
         cp = 1 - budgetCalculator.tDistCDF(-1*t, v);
     }
-    else if (v == 1){
+    else if (v === 1){
         cp = 1/2 + 1/Math.PI*Math.atan(t);
     }
-    else if (v == 2){
+    else if (v === 2){
         cp = 1/2 + t/(2*Math.sqrt(2)*Math.sqrt(1 + t**2/2));
     }
-    else if (v == 3){
+    else if (v === 3){
         cp = 1/2 + 1/Math.PI*(t/(Math.sqrt(3)*(1+t**2/3)) + Math.atan(t/Math.sqrt(3)));
     }
-    else if (v == 4){
+    else if (v === 4){
         cp = 1 - (1/12) * t**2 / (1 + t**2 / 4);
         cp *= 3/8 * t / Math.sqrt(1 + t**2 / 4);
         cp += 1/2;
     }
-    else if (v == 5){
+    else if (v === 5){
         cp = 1 + 2 / (3*(1 + t**2 / 5));
         cp *= t / (Math.sqrt(5)*(1 + t**2 / 5));
         cp *= 1 / Math.PI;
