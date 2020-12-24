@@ -60,9 +60,7 @@ typings/
 # next.js build output
 .next
 
-# databvase passwords for knex
-knex_init.js
-knexfile.js
+# database passwords for knex
 dev.sqlite3
 oneroof-20f41-firebase-adminsdk-up001-48645a9bc3.json
 secrets/
