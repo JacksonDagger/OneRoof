@@ -1,11 +1,13 @@
 const request = require("supertest");
 const knex = require("../db");
 const app = require("../app");
+const { AUTH_DISABLED } = require("../auth");
 
 beforeAll(async () => {
     await knex.migrate.latest()
     .then(function() {
-        console.log("got here");
+        console.log(NODE_ENV);
+        console.log(AUTH_DISABLED);
         return knex.seed.run();
     });
 });
