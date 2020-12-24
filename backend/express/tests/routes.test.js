@@ -13,7 +13,7 @@ beforeAll(async () => {
 afterAll(async(done) => {
     await knex.destroy();
     done();
-})
+});
 
 describe("Houses endpoints", () => {
     it("should create a new house", async () => {
@@ -23,7 +23,6 @@ describe("Houses endpoints", () => {
                 name: "Test house",
                 uid: "Bearer 1"
             });
-        console.log(res.body);
         expect(res.body.id).toEqual(3);
     });
 
