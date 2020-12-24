@@ -6,8 +6,8 @@ const { AUTH_DISABLED } = require("../auth");
 beforeAll(async () => {
     await knex.migrate.latest()
     .then(function() {
-        console.log(NODE_ENV);
-        console.log(AUTH_DISABLED);
+        console.log(process.env.NODE_ENV);
+        console.log(process.env.AUTH_DISABLED);
         return knex.seed.run();
     });
 });
