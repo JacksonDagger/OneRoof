@@ -77,6 +77,8 @@ class Roommates {
             
             var house = housesList[0];
             
+            console.log(house);
+            
             return {
                 id: roommate.roommate_id,
                 name: roommate.roommate_name,
