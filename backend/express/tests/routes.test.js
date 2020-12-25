@@ -67,12 +67,13 @@ describe("Roommates endpoints", () => {
     });
 });
 
-// describe("Youowemes endpoints", () => {
-//     it("should send youoweme", async () => {
-//         const res = await request(app)
-//             .patch("/youowemes/1")
-//             .send({
-//                 payed: true
-//             });
-//     });
-// });
+describe("Youowemes endpoints", () => {
+    it("should send youoweme", async () => {
+        const res = await request(app)
+            .patch("/youowemes")
+            .query({"youowemeId": 1})
+            .send({
+                payed: true
+            });
+    });
+});

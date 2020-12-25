@@ -20,7 +20,7 @@ router.use(auth.authMiddleware);
 router.post("/", async function(req, res) {
     try {
         const id = await houses.addHouse(req.body.name, res.locals.user.uid);
-        res.json({id});
+        res.json({"id": id});
     } catch (error) {
         console.log(error); // eslint-disable-line no-console
         res.status(error.status || 500).send(error.message);
