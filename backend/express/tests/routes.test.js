@@ -30,9 +30,7 @@ describe("Houses endpoints", () => {
     it("should get a house", async () => {
         const res = await request(app)
             .get("/houses/1")
-            .send({
-                uid: "Bearer 1"
-            });
+            .send();
         expect(res.body.id).toBeDefined();
     });
 
