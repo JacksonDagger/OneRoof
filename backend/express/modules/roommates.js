@@ -66,8 +66,6 @@ class Roommates {
                 .select();
 
             var roommate = roommatesList[0];
-
-            console.log(roommate);
                 
              if (!roommate.roommate_house) {
                return {id: roommate.roommate_id, name: roommate.roommate_name};
@@ -76,13 +74,8 @@ class Roommates {
             var houses_list = await this.knex("houses")
                 .where("house_id", roommate.roommate_house)
                 .select("house_admin");
-            
 
-            console.log(houses_list);
             var house = houses_list[0];
-            
-            console.log(house);
-            console.log(house.house_admin);
 
             return {
                 id: roommate.roommate_id,

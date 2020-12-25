@@ -106,7 +106,6 @@ class Houses {
             var roommate;
         
             try {
-                console.log(uid);
                 roommate = await this.roommates.getRoommateFromUid(uid);
             } catch (error) {
                 console.log(error);
