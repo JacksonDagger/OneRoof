@@ -109,6 +109,7 @@ class Houses {
                 console.log(uid);
                 roommate = await this.roommates.getRoommateFromUid(uid);
             } catch (error) {
+                console.log(error);
                 throw new BadRequestError("requester not found");
             }
         
