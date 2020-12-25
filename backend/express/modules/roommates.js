@@ -82,6 +82,7 @@ class Roommates {
             var house = houses_list[0];
             
             console.log(house);
+            console.log(house.house_admin);
 
             return {
                 id: roommate.roommate_id,
